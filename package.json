@@ -3,9 +3,15 @@
     "gen:types:diagnostics": "json2ts ./contracts/schema/diagnostics.schema.json -o ./contracts/types/diagnostics.d.ts",
     "gen:types:memory": "json2ts ./contracts/schema/memory.schema.json -o ./contracts/types/memory.d.ts",
     "gen:types:contracts": "json2ts ./contracts.schema.json -o ./contracts/types/contracts.d.ts",
-    "gen:types": "npm run gen:types:diagnostics && npm run gen:types:memory && npm run gen:types:contracts",
+    "gen:types:rooms": "json2ts ./contracts/schema/rooms.schema.json -o ./contracts/types/rooms.d.ts",
+    "gen:types:gates": "json2ts ./contracts/schema/gates/integrity_linter.schema.json -o ./contracts/types/gate.integrity_linter.d.ts && json2ts ./contracts/schema/gates/plain_language_rewriter.schema.json -o ./contracts/types/gate.plain_language_rewriter.d.ts && json2ts ./contracts/schema/gates/stones_alignment_filter.schema.json -o ./contracts/types/gate.stones_alignment_filter.d.ts && json2ts ./contracts/schema/gates/coherence_gate.schema.json -o ./contracts/types/gate.coherence_gate.d.ts && json2ts ./contracts/schema/gates/refusal_library.schema.json -o ./contracts/types/gate.refusal_library.d.ts",
+    "gen:types": "npm run gen:types:diagnostics && npm run gen:types:memory && npm run gen:types:contracts && npm run gen:types:rooms && npm run gen:types:gates",
     "validate:diagnostics": "ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/diagnostics.schema.json -d ./contracts/services/diagnostics.json",
     "validate:memory": "ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/memory.schema.json -d ./contracts/services/memory.json",
+    "validate:rooms": "ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/rooms.schema.json -d \"./contracts/rooms/*.json\"",
+    "validate:gates": "ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/gates/integrity_linter.schema.json -d ./contracts/gates/integrity_linter.json && ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/gates/plain_language_rewriter.schema.json -d ./contracts/gates/plain_language_rewriter.json && ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/gates/stones_alignment_filter.schema.json -d ./contracts/gates/stones_alignment_filter.json && ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/gates/coherence_gate.schema.json -d ./contracts/gates/coherence_gate.json && ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/gates/refusal_library.schema.json -d ./contracts/gates/refusal_library.json",
+    "validate:services": "npm run validate:diagnostics && npm run validate:memory",
+    "validate:all": "npm run validate:rooms && npm run validate:gates && npm run validate:services",
     "validate": "npm run validate:diagnostics && npm run validate:memory"
   },
   "devDependencies": {
@@ -17,5 +23,3 @@
     "typescript": "^5.6.0"
   }
 }
-
-

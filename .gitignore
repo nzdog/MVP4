@@ -1,0 +1,21 @@
+# Node modules
+node_modules/
+
+# macOS junk
+.DS_Store
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Generated type definitions
+/contracts/types/*.d.ts
+
+# Build artifacts
+dist/
+build/
+
+# Local environment files
+.env
+.env.local
