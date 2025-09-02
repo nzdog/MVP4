@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "gen:types:diagnostics": "json2ts ./contracts/schema/diagnostics.schema.json -o ./contracts/types/diagnostics.d.ts",
+    "gen:types:memory": "json2ts ./contracts/schema/memory.schema.json -o ./contracts/types/memory.d.ts",
+    "gen:types:contracts": "json2ts ./contracts.schema.json -o ./contracts/types/contracts.d.ts",
+    "gen:types": "npm run gen:types:diagnostics && npm run gen:types:memory && npm run gen:types:contracts",
+    "validate:diagnostics": "ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/diagnostics.schema.json -d ./contracts/services/diagnostics.json",
+    "validate:memory": "ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/memory.schema.json -d ./contracts/services/memory.json",
+    "validate": "npm run validate:diagnostics && npm run validate:memory"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-cli": "^5.0.0",
+    "ajv-formats": "^3.0.1",
+    "fast-uri": "^3.1.0",
+    "json-schema-to-typescript": "^13.1.1",
+    "typescript": "^5.6.0"
+  }
+}
+
+

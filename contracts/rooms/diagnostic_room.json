@@ -1,0 +1,10 @@
+{
+  "room_id": "diagnostic_room",
+  "title": "Diagnostic Room",
+  "purpose": "Sense tones, residues, readiness, and map to next best protocols.",
+  "stone_alignment": ["Clarity Over Cleverness", "Presence Is Productivity", "Built for Wholeness"],
+  "mini_walk_supported": true,
+  "completion_prompt_required": false,
+  "diagnostics_default": true,
+  "gate_profile": ["stones_filter", "coherence_gate"]
+}

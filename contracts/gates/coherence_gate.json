@@ -1,0 +1,23 @@
+{
+  "gate_id": "coherence_gate",
+  "title": "Coherence Gate",
+  "version": "0.1.0",
+  "purpose": "Ensure outputs remain coherent with prior context, diagnostics, and user-session state.",
+  "checks": {
+    "consistency_required": true,
+    "drift_detection_enabled": true
+  },
+  "inputs": {
+    "candidate_text": "string",
+    "session_state_ref": "string"
+  },
+  "outputs": {
+    "coherence_pass": "boolean",
+    "drift_events": "array of {reason: string, location: string}"
+  },
+  "on_failure": {
+    "action": "refusal_library",
+    "refusal_style": ["not_now", "not_like_this"],
+    "offer_alternative": true
+  }
+}

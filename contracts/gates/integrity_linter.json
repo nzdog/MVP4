@@ -1,0 +1,22 @@
+{
+  "gate_id": "integrity_linter",
+  "title": "Integrity Linter",
+  "version": "0.1.0",
+  "purpose": "Check all outputs for violations of integrity, rhythm, and relational posture before delivery.",
+  "checks": {
+    "prohibited": ["manipulation", "urgency logic", "distortion of Stones", "plagiarism"],
+    "required_alignment": ["Integrity Is the Growth Strategy", "No Contortion for Acceptance"]
+  },
+  "inputs": {
+    "raw_text": "string"
+  },
+  "outputs": {
+    "lint_pass": "boolean",
+    "issues": "array of {rule: string, reason: string}"
+  },
+  "on_failure": {
+    "action": "regenerate",
+    "max_attempts": 1,
+    "fallback": "refusal_library"
+  }
+}
