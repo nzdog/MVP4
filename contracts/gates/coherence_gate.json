@@ -12,12 +12,15 @@
     "session_state_ref": "string"
   },
   "outputs": {
-    "coherence_pass": "boolean",
-    "drift_events": "array of {reason: string, location: string}"
+    "coherence_pass": true,
+    "drift_events": []
   },
   "on_failure": {
     "action": "refusal_library",
-    "refusal_style": ["not_now", "not_like_this"],
+    "refusal_style": [
+      "not_now",
+      "not_like_this"
+    ],
     "offer_alternative": true
   }
 }

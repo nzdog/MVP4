@@ -19,8 +19,8 @@
     "candidate_text": "string"
   },
   "outputs": {
-    "stones_pass": "boolean",
-    "violated_stones": "array of strings"
+    "stones_pass": true,
+    "violated_stones": []
   },
   "on_failure": {
     "action": "regenerate",

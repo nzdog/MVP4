@@ -1,0 +1,9 @@
+repos:
+- repo: local
+  hooks:
+    - id: validate-contracts
+      name: Validate contracts against schema
+      entry: python3 scripts/validate.py
+      language: system
+      pass_filenames: false
+

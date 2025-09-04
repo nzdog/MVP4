@@ -96,6 +96,24 @@
       ]
     },
     {
+      "Name": "AI Room",
+      "Purpose": "To act as the single steward of AI interactions: receive briefs from other rooms, generate aligned prompts, call models, apply governance checks, and return validated outputs.",
+      "Why This Matters": "Without central stewardship, prompts and outputs scatter across the system, causing drift, duplication, and incoherence. The AI Room ensures coherence, safety, and learning without burdening other rooms.",
+      "Outcomes": {
+        "Poor": "Each room crafts its own prompts and calls AI directly. Future: fragmentation, drift, and loss of trust.",
+        "Expected": "All AI interactions flow through the AI Room, which applies basic guardrails and returns consistent outputs. Future: coherent but limited adaptability.",
+        "Excellent": "The AI Room governs prompts, versioning, champion–challenger testing, and offline learning. Other rooms remain clean and purpose-focused. Future: coherence strengthens system-wide.",
+        "Transcendent": "The AI Room evolves as a living steward of signal. Outputs feel coherent and relational, regardless of model changes. Future: the system speaks with one voice across contexts."
+      },
+      "Guiding Questions": [
+        "Does the AI Room always receive a clear brief rather than raw user input?",
+        "Are prompts generated, stored, and versioned centrally?",
+        "Are outputs always filtered through Stones and coherence gates before delivery?",
+        "Can the AI Room adapt to new models without disturbing other rooms?",
+        "Does the AI Room serve as steward, not controller, of AI interactions?"
+      ]
+    },
+    {
       "Name": "Integration & Commit Room",
       "Purpose": "To harvest shifts, set next steps, and close with agency.",
       "Why This Matters": "Integration protects the impact of every walk.",
@@ -134,6 +152,7 @@
     "Does this room honor PRA invariants?",
     "Are diagnostics captured by default?",
     "If this room stood alone, would it still transmit coherence?",
-    "Has this room’s output been validated against Stones and coherence gates?"
+    "Has this room’s output been validated against Stones and coherence gates?",
+    "For the AI Room: is it stewarding coherence, not centralizing control?"
   ]
 }

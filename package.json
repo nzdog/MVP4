@@ -8,7 +8,7 @@
     "gen:types": "npm run gen:types:diagnostics && npm run gen:types:memory && npm run gen:types:contracts && npm run gen:types:rooms && npm run gen:types:gates",
     "validate:diagnostics": "ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/diagnostics.schema.json -d ./contracts/services/diagnostics.json",
     "validate:memory": "ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/memory.schema.json -d ./contracts/services/memory.json",
-    "validate:rooms": "ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/rooms.schema.json -d \"./contracts/rooms/*.json\"",
+  "validate:rooms": "ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/rooms.schema.json -d './contracts/rooms/*.json",
     "validate:gates": "ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/gates/integrity_linter.schema.json -d ./contracts/gates/integrity_linter.json && ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/gates/plain_language_rewriter.schema.json -d ./contracts/gates/plain_language_rewriter.json && ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/gates/stones_alignment_filter.schema.json -d ./contracts/gates/stones_alignment_filter.json && ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/gates/coherence_gate.schema.json -d ./contracts/gates/coherence_gate.json && ajv validate --spec=draft7 -c ajv-formats -s ./contracts/schema/gates/refusal_library.schema.json -d ./contracts/gates/refusal_library.json",
     "validate:services": "npm run validate:diagnostics && npm run validate:memory",
     "validate:all": "npm run validate:rooms && npm run validate:gates && npm run validate:services",

@@ -13,7 +13,7 @@
   },
   "outputs": {
     "refusal_text": "string",
-    "refusal_mode": "string"
+    "refusal_mode": "not_now"
   },
   "notes": "Always maintain rhythm, integrity, and respect. Refusals are part of coherence, not rejection."
 }
