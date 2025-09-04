@@ -3,8 +3,8 @@ Diagnostic Room Module
 Implements the Diagnostic Room Protocol and Contract for Lichen Protocol Room Architecture (PRA)
 """
 
-from diagnostic_room.diagnostic_room import DiagnosticRoom, run_diagnostic_room
-from diagnostic_room.room_types import (
+from diagnostic_room import DiagnosticRoom, run_diagnostic_room
+from room_types import (
     DiagnosticRoomInput,
     DiagnosticRoomOutput,
     DiagnosticSignals,

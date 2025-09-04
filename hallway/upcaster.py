@@ -110,3 +110,56 @@ def verify_roundtrip(
     extracted_canonical = canonical_json(extracted_data)
     
     return original_canonical == extracted_canonical
+
+
+def map_room_output_to_v02(room_output: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Map room output shape to v0.2 StepResult fields.
+    
+    Args:
+        room_output: The room's output dictionary
+        
+    Returns:
+        Mapped output with v0.2 field names
+    """
+    mapped = {}
+    
+    # Map display_text to output.text if present
+    if "display_text" in room_output:
+        mapped["text"] = room_output["display_text"]
+    
+    # Map next_action to output.next_action if present
+    if "next_action" in room_output:
+        mapped["next_action"] = room_output["next_action"]
+    
+    # Handle decline objects
+    if "_decline_reason" in room_output:
+        mapped["decline"] = {
+            "reason": room_output["_decline_reason"],
+            "ok": False,
+            "details": room_output.get("_error_details", {})
+        }
+    
+    # Copy any other fields
+    for key, value in room_output.items():
+        if key not in ["display_text", "next_action", "_decline_reason", "_error_details"]:
+            mapped[key] = value
+    
+    return mapped
+
+
+def is_room_decline(room_output: Dict[str, Any]) -> bool:
+    """
+    Check if a room output indicates a decline.
+    
+    Args:
+        room_output: The room's output dictionary
+        
+    Returns:
+        True if the output indicates a decline
+    """
+    return (
+        "_decline_reason" in room_output or
+        room_output.get("next_action") == "hold" or
+        room_output.get("next_action") == "later"
+    )

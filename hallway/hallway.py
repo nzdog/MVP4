@@ -5,10 +5,13 @@ Deterministic multi-room session orchestrator with gate enforcement and audit tr
 
 import asyncio
 import importlib
+import time
 from typing import Dict, Any, List, Optional
 from .gates import evaluate_gate_chain, CoherenceGate
-from .upcaster import upcast_v01_to_v02
+from .upcaster import upcast_v01_to_v02, is_room_decline
 from .audit import build_audit_chain
+from .rooms_registry import get_room_function, is_room_available
+from .schema_utils import validate_room_output, create_schema_decline
 
 
 class HallwayOrchestrator:
@@ -123,18 +126,99 @@ class HallwayOrchestrator:
                 last_hash = step_result["audit"]["step_hash"]
                 continue
             
-            # For now, always use mock output to avoid room execution issues
-            # This will be replaced with proper room integration later
-            mock_output = {"dry_run": True, "room_id": room_id}
-            room_output = mock_output
+            # Check if room is available in registry
+            if not is_room_available(room_id):
+                # Room not found in registry - create decline step
+                decline_output = create_schema_decline(
+                    room_id, 
+                    f"Room '{room_id}' not found in registry"
+                )
+                step_result = upcast_v01_to_v02(
+                    room_id=room_id,
+                    room_output_v01=decline_output,
+                    status="decline",
+                    gate_decisions=gate_decisions_dict,
+                    prev_hash=last_hash
+                )
+                steps.append(step_result)
+                last_hash = step_result["audit"]["step_hash"]
+                
+                if stop_on_decline:
+                    exit_summary = self._build_exit_summary(
+                        completed=False,
+                        decline={
+                            "reason": "room_not_found",
+                            "message": f"Room '{room_id}' not found in registry",
+                            "details": {"room_id": room_id}
+                        },
+                        steps=steps
+                    )
+                    return self._build_hallway_output(steps, final_state_ref, exit_summary)
+                continue
             
-            # Run the room (commented out for now)
-            # try:
-            #     room_output = await self._run_room(room_id, session_state_ref, payloads)
+            # Run the real room
+            try:
+                room_output = await self._run_room(room_id, session_state_ref, payloads)
+            except Exception as e:
+                # Room execution failed - create decline step
+                decline_output = create_schema_decline(
+                    room_id, 
+                    f"Room execution failed: {str(e)}"
+                )
+                step_result = upcast_v01_to_v02(
+                    room_id=room_id,
+                    room_output_v01=decline_output,
+                    status="decline",
+                    gate_decisions=gate_decisions_dict,
+                    prev_hash=last_hash
+                )
+                steps.append(step_result)
+                last_hash = step_result["audit"]["step_hash"]
+                
+                if stop_on_decline:
+                    exit_summary = self._build_exit_summary(
+                        completed=False,
+                        decline={
+                            "reason": "room_execution_failed",
+                            "message": f"Room '{room_id}' execution failed",
+                            "details": {"room_id": room_id, "error": str(e)}
+                        },
+                        steps=steps
+                    )
+                    return self._build_hallway_output(steps, final_state_ref, exit_summary)
+                continue
+            
+            # Validate room output against its schema
+            is_valid, validation_error = validate_room_output(room_id, room_output)
+            if not is_valid:
+                # Schema validation failed - create decline step
+                decline_output = create_schema_decline(room_id, validation_error)
+                step_result = upcast_v01_to_v02(
+                    room_id=room_id,
+                    room_output_v01=decline_output,
+                    status="decline",
+                    gate_decisions=gate_decisions_dict,
+                    prev_hash=last_hash
+                )
+                steps.append(step_result)
+                last_hash = step_result["audit"]["step_hash"]
+                
+                if stop_on_decline:
+                    exit_summary = self._build_exit_summary(
+                        completed=False,
+                        decline={
+                            "reason": "schema_validation_failed",
+                            "message": f"Room '{room_id}' output failed schema validation",
+                            "details": {"room_id": room_id, "error": validation_error}
+                        },
+                        steps=steps
+                    )
+                    return self._build_hallway_output(steps, final_state_ref, exit_summary)
+                continue
             
             # Determine status based on room output
             status = "ok"
-            if self._is_room_decline(room_output):
+            if is_room_decline(room_output):
                 status = "decline"
             
             # Create step result
@@ -199,69 +283,57 @@ class HallwayOrchestrator:
     
     async def _run_room(self, room_id: str, session_state_ref: str, payloads: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """Run a single room and return its output."""
-        # Import the room module
+        # Get the room function from registry
         try:
-            room_module = importlib.import_module(f"rooms.{room_id}")
-        except ImportError:
-            raise ImportError(f"Could not import room module: rooms.{room_id}")
-        
-        # Get the room's run function
-        if hasattr(room_module, f"run_{room_id}"):
-            run_func = getattr(room_module, f"run_{room_id}")
-        else:
-            # Fallback to looking for a 'run' function
-            if hasattr(room_module, "run"):
-                run_func = room_module.run
-            else:
-                raise AttributeError(f"Room {room_id} does not have a run function")
+            room_fn = get_room_function(room_id)
+        except KeyError as e:
+            raise KeyError(f"Room '{room_id}' not found in registry: {e}")
         
         # Prepare input for the room
         room_input = {
-            "session_state_ref": session_state_ref
+            "session_state_ref": session_state_ref,
+            "payload": payloads.get(room_id) if payloads else None,
+            "options": {}  # Room-specific options can be added here
         }
         
-        # Add room-specific payload if provided
-        if payloads and room_id in payloads:
-            room_input.update(payloads[room_id])
+        # Record start time for timing metadata
+        start_time = time.time()
         
-        # For now, let's use dry_run mode to avoid room execution issues
-        # This will be replaced with proper room integration later
-        if self._is_dry_run_mode():
-            mock_output = {"dry_run": True, "room_id": room_id}
-            return mock_output
-        
-        # Run the room (handle both sync and async functions)
         try:
-            if asyncio.iscoroutinefunction(run_func):
-                result = await run_func(room_input)
-            else:
-                result = run_func(room_input)
+            # Run the room function
+            result = await room_fn(room_input)
+            
+            # Record end time and compute elapsed time
+            end_time = time.time()
+            elapsed_ms = int((end_time - start_time) * 1000)
+            
+            # Add timing metadata to the result (non-user-facing)
+            if isinstance(result, dict):
+                result["_timing"] = {
+                    "elapsed_ms": elapsed_ms,
+                    "start_time": start_time,
+                    "end_time": end_time
+                }
+            
             return result
+            
         except Exception as e:
-            # Return error output if room execution fails
+            # Record end time for failed executions
+            end_time = time.time()
+            elapsed_ms = int((end_time - start_time) * 1000)
+            
+            # Return error output with timing metadata
             return {
                 "error": f"Room execution failed: {str(e)}",
-                "room_id": room_id
+                "room_id": room_id,
+                "_timing": {
+                    "elapsed_ms": elapsed_ms,
+                    "start_time": start_time,
+                    "end_time": end_time
+                }
             }
-        
-        return result
     
-    def _is_dry_run_mode(self) -> bool:
-        """Check if we're in dry run mode."""
-        # For now, always return True to avoid room execution issues
-        # This will be replaced with proper room integration later
-        return True
-    
-    def _is_room_decline(self, room_output: Dict[str, Any]) -> bool:
-        """Check if a room output indicates a decline."""
-        # Check for common decline indicators
-        if "error" in room_output:
-            return True
-        if "status" in room_output and room_output["status"] == "decline":
-            return True
-        if "next_action" in room_output and room_output["next_action"] in ["hold", "later"]:
-            return True
-        return False
+
     
     def _build_exit_summary(self, completed: bool, decline: Optional[Dict[str, Any]], steps: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Build the exit summary for the hallway output."""

@@ -4,7 +4,8 @@ Example Usage of Diagnostic Room
 Demonstrates basic and advanced usage patterns
 """
 
-from diagnostic_room import run_diagnostic_room, DiagnosticRoomInput
+from diagnostic_room import run_diagnostic_room
+from room_types import DiagnosticRoomInput
 
 
 def basic_usage_example():

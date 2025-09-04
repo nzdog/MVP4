@@ -9,12 +9,12 @@ import os
 # Add the diagnostic_room directory to the path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'diagnostic_room'))
 
-from room_types import DiagnosticRoomInput, DiagnosticRoomOutput, DiagnosticSignals, ProtocolMapping
-from sensing import capture_tone_and_residue
-from readiness import assess_readiness, readiness_to_action
-from mapping import map_to_protocol
-from capture import capture_diagnostics, format_display_text
-from completion import append_fixed_marker
+from rooms.diagnostic_room.room_types import DiagnosticRoomInput, DiagnosticRoomOutput, DiagnosticSignals, ProtocolMapping
+from rooms.diagnostic_room.sensing import capture_tone_and_residue
+from rooms.diagnostic_room.readiness import assess_readiness, readiness_to_action
+from rooms.diagnostic_room.mapping import map_to_protocol
+from rooms.diagnostic_room.capture import capture_diagnostics, format_display_text
+from rooms.diagnostic_room.completion import append_fixed_marker
 
 def test_capture_only_sensing():
     """Test capture-only sensing"""

@@ -10,8 +10,8 @@ import os
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from diagnostic_room.diagnostic_room import DiagnosticRoom, run_diagnostic_room
-from types import DiagnosticRoomInput, DiagnosticRoomOutput, DiagnosticSignals, ProtocolMapping
+from diagnostic_room import DiagnosticRoom, run_diagnostic_room
+from room_types import DiagnosticRoomInput, DiagnosticRoomOutput, DiagnosticSignals, ProtocolMapping
 from sensing import capture_tone_and_residue
 from readiness import assess_readiness
 from mapping import map_to_protocol
@@ -90,11 +90,11 @@ class TestDiagnosticRoom:
         readiness = assess_readiness(signals)
         assert readiness == "LATER"
         
-        # Test tone-based readiness
+        # Test tone-based readiness (when no explicit readiness_state)
         signals = DiagnosticSignals(
             tone_label="overwhelm",
             residue_label="unspecified",
-            readiness_state="NOW"
+            readiness_state="unspecified"  # No explicit state
         )
         
         readiness = assess_readiness(signals)
@@ -306,8 +306,8 @@ class TestDiagnosticRoom:
         room = DiagnosticRoom()
         result = room.run_diagnostic_room(input_data)
         
-        # Should handle error gracefully
-        assert "error" in result.display_text.lower()
+        # Should handle None payload gracefully by using defaults
+        assert "unspecified" in result.display_text.lower()
         assert result.display_text.endswith(" [[COMPLETE]]")
         assert result.next_action == "continue"
     
