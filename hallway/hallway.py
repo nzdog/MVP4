@@ -300,8 +300,12 @@ class HallwayOrchestrator:
         start_time = time.time()
         
         try:
-            # Run the room function
-            result = await room_fn(room_input)
+            # Run the room function (handle both async and sync)
+            import asyncio
+            if asyncio.iscoroutinefunction(room_fn):
+                result = await room_fn(room_input)
+            else:
+                result = room_fn(room_input)
             
             # Record end time and compute elapsed time
             end_time = time.time()

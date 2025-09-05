@@ -3,7 +3,7 @@ Mapping Module
 Implements Protocol Mapping theme from Diagnostic Room Protocol
 """
 
-from room_types import ProtocolMapping, DiagnosticSignals, Protocols
+from rooms.diagnostic_room.room_types import ProtocolMapping, DiagnosticSignals, Protocols
 
 
 def map_to_protocol(signals: DiagnosticSignals) -> ProtocolMapping:

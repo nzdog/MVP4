@@ -19,11 +19,11 @@ async def example_full_walk():
     # Create orchestrator
     orchestrator = HallwayOrchestrator(contract)
     
-    # Run full sequence
+    # Run full sequence with explicit consent
     result = await orchestrator.run(
         session_state_ref="example-session-full",
         payloads={
-            "entry_room": {"user_input": "Hello, I want to start a session"},
+            "entry_room": {"user_input": "Hello, I want to start a session", "consent": "YES"},
             "protocol_room": {"protocol_type": "standard"}
         }
     )
@@ -39,10 +39,13 @@ async def example_mini_walk():
     """Example: Run a mini-walk (first and last room)"""
     print("\n=== Mini Walk Example ===")
     
-    # Use the convenience function
+    # Use the convenience function with explicit consent
     result = await run_hallway(
         session_state_ref="example-session-mini",
-        options={"mini_walk": True}
+        options={"mini_walk": True},
+        payloads={
+            "entry_room": {"consent": "YES"}
+        }
     )
     
     print(f"Completed: {result['outputs']['exit_summary']['completed']}")
@@ -61,7 +64,10 @@ async def example_custom_subset():
     
     result = await run_hallway(
         session_state_ref="example-session-custom",
-        options={"rooms_subset": ["entry_room", "protocol_room", "exit_room"]}
+        options={"rooms_subset": ["entry_room", "protocol_room", "exit_room"]},
+        payloads={
+            "entry_room": {"consent": "YES"}
+        }
     )
     
     print(f"Completed: {result['outputs']['exit_summary']['completed']}")

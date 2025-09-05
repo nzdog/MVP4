@@ -1,25 +1,7 @@
 """
-Entry Room Module
-Implements the Entry Room Protocol and Contract for Lichen Protocol Room Architecture (PRA)
+Entry Room Package
 """
 
-from .entry_room import EntryRoom, run_entry_room
-from .types import (
-    EntryRoomInput,
-    EntryRoomOutput,
-    PaceState,
-    GateResult,
-    DiagnosticRecord,
-    EntryRoomContext
-)
+from .entry_room import EntryRoom, EntryRoomConfig, run_entry_room
 
-__all__ = [
-    'EntryRoom',
-    'run_entry_room',
-    'EntryRoomInput',
-    'EntryRoomOutput',
-    'PaceState',
-    'GateResult',
-    'DiagnosticRecord',
-    'EntryRoomContext'
-]
+__all__ = ['EntryRoom', 'EntryRoomConfig', 'run_entry_room']

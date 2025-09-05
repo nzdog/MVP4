@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Union
 from .contract_types import (
     IntegrationCommitRoomInput, IntegrationCommitRoomOutput, RoomState,
     IntegrationData, Commitment, DeclineResponse
@@ -365,7 +365,11 @@ class IntegrationCommitRoom:
             del self.room_states[session_id]
 
 
-def run_integration_commit_room(input_data: IntegrationCommitRoomInput) -> IntegrationCommitRoomOutput:
+def run_integration_commit_room(input_data: Union[IntegrationCommitRoomInput, Dict[str, Any]]) -> Dict[str, Any]:
     """Standalone function to run Integration & Commit Room operations"""
+    from rooms.integration_commit_room.contract_types import IntegrationCommitRoomInput
+    from dataclasses import asdict
+    inp = IntegrationCommitRoomInput.from_obj(input_data)
     room = IntegrationCommitRoom()
-    return room.run_integration_commit_room(input_data)
+    result = room.run_integration_commit_room(inp)
+    return asdict(result)

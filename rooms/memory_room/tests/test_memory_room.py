@@ -514,9 +514,10 @@ class TestRunMemoryRoomFunction:
         
         result = run_memory_room(input_data)
         
-        assert "Memory captured successfully" in result.display_text
-        assert result.display_text.endswith(" [[COMPLETE]]")
-        assert result.next_action == "continue"
+        assert isinstance(result, dict)
+        assert "Memory captured successfully" in result['display_text']
+        assert result['display_text'].endswith(" [[COMPLETE]]")
+        assert result['next_action'] == "continue"
 
 
 class TestNoTypeScriptArtifacts:

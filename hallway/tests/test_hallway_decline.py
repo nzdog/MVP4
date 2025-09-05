@@ -62,7 +62,10 @@ class TestHallwayDeclinePath:
         # Run with stop_on_decline=True (default)
         result = await orchestrator.run(
             session_state_ref="test-session-gate-deny",
-            options={"stop_on_decline": True}
+            options={"stop_on_decline": True},
+            payloads={
+                "entry_room": {"consent": "YES"}
+            }
         )
         
         # Validate against schema
@@ -102,7 +105,10 @@ class TestHallwayDeclinePath:
         # Run with stop_on_decline=False
         result = await orchestrator.run(
             session_state_ref="test-session-gate-deny-continue",
-            options={"stop_on_decline": False}
+            options={"stop_on_decline": False},
+            payloads={
+                "entry_room": {"consent": "YES"}
+            }
         )
         
         # Validate against schema
@@ -297,7 +303,14 @@ class TestHallwayDeclinePath:
         # Run with stop_on_decline=True
         result = await orchestrator.run(
             session_state_ref="test-session-gate-order",
-            options={"stop_on_decline": True}
+            options={"stop_on_decline": True},
+            payloads={
+                "entry_room": {"consent": "YES"},
+                "exit_room": {
+                    "completion_confirmed": True,
+                    "session_goals_met": True
+                }
+            }
         )
         
         # Validate against schema

@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Union
 from .contract_types import (
     MemoryRoomInput, MemoryRoomOutput, MemoryItem, MemorySession,
     MemoryScope, UserAction, CaptureData, MemoryQuery
@@ -329,7 +329,11 @@ class MemoryRoom:
         }
 
 
-def run_memory_room(input_data: MemoryRoomInput) -> MemoryRoomOutput:
+def run_memory_room(input_data: Union[MemoryRoomInput, Dict[str, Any]]) -> Dict[str, Any]:
     """Standalone function to run Memory Room operations"""
+    from rooms.memory_room.contract_types import MemoryRoomInput
+    from dataclasses import asdict
+    inp = MemoryRoomInput.from_obj(input_data)
     room = MemoryRoom()
-    return room.run_memory_room(input_data)
+    result = room.run_memory_room(inp)
+    return asdict(result)

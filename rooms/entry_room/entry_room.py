@@ -4,20 +4,20 @@ Main orchestrator that implements the Entry Room Protocol and Contract
 """
 
 import asyncio
-from typing import Optional, Dict, Any
-from .types import (
+from typing import Optional, Dict, Any, Union
+from rooms.entry_room.types import (
     EntryRoomInput,
     EntryRoomOutput,
     EntryRoomContext,
     PaceState,
     GateResult
 )
-from .reflection import VerbatimReflection
-from .gates import GateChain, GateChainConfig, StubIntegrityLinter, StubPlainLanguageRewriter, StubStonesAlignmentFilter, StubCoherenceGate
-from .pace import PacePolicy, pace_state_to_next_action, DefaultPacePolicy
-from .consent import ConsentPolicy, DefaultConsentPolicy
-from .diagnostics import DiagnosticsPolicy, DefaultDiagnosticsPolicy
-from .completion import CompletionPolicy, DefaultCompletionPolicy
+from rooms.entry_room.reflection import VerbatimReflection
+from rooms.entry_room.gates import GateChain, GateChainConfig, StubIntegrityLinter, StubPlainLanguageRewriter, StubStonesAlignmentFilter, StubCoherenceGate
+from rooms.entry_room.pace import PacePolicy, pace_state_to_next_action, DefaultPacePolicy
+from rooms.entry_room.consent import ConsentPolicy, DefaultConsentPolicy
+from rooms.entry_room.diagnostics import DiagnosticsPolicy, DefaultDiagnosticsPolicy
+from rooms.entry_room.completion import CompletionPolicy, DefaultCompletionPolicy
 
 
 class EntryRoomConfig:
@@ -58,12 +58,19 @@ class EntryRoom:
         self.completion_policy = config.completion or self._create_default_completion_policy()
         self.diagnostics_default = config.diagnostics_default
     
-    async def run_entry_room(self, input_data: EntryRoomInput) -> EntryRoomOutput:
+    async def run_entry_room(self, input_data: Union[EntryRoomInput, Dict[str, Any]]) -> EntryRoomOutput:
         """
         Main entry point that orchestrates the Entry Room protocol.
         Implements: Faithful Reflection → Pre-Gate Chain → Pace Setting → Consent Anchor → Diagnostics → Completion Prompt → Output
         """
         try:
+            # Convert dict input to EntryRoomInput if needed
+            if isinstance(input_data, dict):
+                input_data = EntryRoomInput(
+                    session_state_ref=input_data.get("session_state_ref", ""),
+                    payload=input_data.get("payload")
+                )
+            
             # 1. Faithful Reflection: Mirror input exactly
             reflected_ideas = self.reflection.reflect_verbatim(input_data.payload)
             display_text = '\n'.join(reflected_ideas)
@@ -138,10 +145,15 @@ class EntryRoom:
     
     async def _enforce_consent(self, input_data: EntryRoomInput, pace_state: PaceState) -> str:
         """Enforce explicit consent before proceeding"""
+        # Check for consent in the payload
+        consent_granted = False
+        if isinstance(input_data.payload, dict) and input_data.payload.get("consent") == "YES":
+            consent_granted = True
+        
         context = EntryRoomContext(
             session_id=input_data.session_state_ref,
             pace_state=pace_state,
-            consent_granted=False,
+            consent_granted=consent_granted,
             diagnostics_enabled=self.diagnostics_default
         )
         
@@ -201,7 +213,9 @@ class EntryRoom:
         return DefaultCompletionPolicy()
 
 
-async def run_entry_room(input_data: EntryRoomInput, config: Optional[EntryRoomConfig] = None) -> EntryRoomOutput:
+async def run_entry_room(input_data: Union[EntryRoomInput, Dict[str, Any]], config: Optional[EntryRoomConfig] = None) -> Dict[str, Any]:
     """Standalone function for external use"""
+    from dataclasses import asdict
     room = EntryRoom(config)
-    return await room.run_entry_room(input_data)
+    result = await room.run_entry_room(input_data)
+    return asdict(result)

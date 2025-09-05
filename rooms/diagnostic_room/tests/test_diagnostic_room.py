@@ -10,13 +10,13 @@ import os
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from diagnostic_room import DiagnosticRoom, run_diagnostic_room
-from room_types import DiagnosticRoomInput, DiagnosticRoomOutput, DiagnosticSignals, ProtocolMapping
-from sensing import capture_tone_and_residue
-from readiness import assess_readiness
-from mapping import map_to_protocol
-from capture import capture_diagnostics, format_display_text
-from completion import append_fixed_marker
+from rooms.diagnostic_room.diagnostic_room import DiagnosticRoom, run_diagnostic_room
+from rooms.diagnostic_room.room_types import DiagnosticRoomInput, DiagnosticRoomOutput, DiagnosticSignals, ProtocolMapping
+from rooms.diagnostic_room.sensing import capture_tone_and_residue
+from rooms.diagnostic_room.readiness import assess_readiness
+from rooms.diagnostic_room.mapping import map_to_protocol
+from rooms.diagnostic_room.capture import capture_diagnostics, format_display_text
+from rooms.diagnostic_room.completion import append_fixed_marker
 
 
 class TestDiagnosticRoom:
@@ -340,9 +340,10 @@ class TestRunDiagnosticRoomFunction:
         
         result = run_diagnostic_room(input_data)
         
-        assert hasattr(result, 'display_text')
-        assert hasattr(result, 'next_action')
-        assert result.next_action == "continue"
+        assert isinstance(result, dict)
+        assert 'display_text' in result
+        assert 'next_action' in result
+        assert result['next_action'] == "continue"
     
     def test_standalone_function_accepts_diagnostics_toggle(self):
         """Test that run_diagnostic_room function accepts diagnostics toggle"""
@@ -354,8 +355,9 @@ class TestRunDiagnosticRoomFunction:
         # Test with diagnostics disabled
         result = run_diagnostic_room(input_data, diagnostics_enabled=False)
         
-        assert result.display_text.endswith(" [[COMPLETE]]")
-        assert result.next_action == "continue"
+        assert isinstance(result, dict)
+        assert result['display_text'].endswith(" [[COMPLETE]]")
+        assert result['next_action'] == "continue"
 
 
 class TestNoTypeScriptArtifacts:

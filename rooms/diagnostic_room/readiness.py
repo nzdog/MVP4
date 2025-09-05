@@ -3,7 +3,7 @@ Readiness Module
 Implements Readiness Assessment theme from Diagnostic Room Protocol
 """
 
-from room_types import ReadinessState
+from rooms.diagnostic_room.room_types import ReadinessState
 
 
 def assess_readiness(signals: 'DiagnosticSignals') -> ReadinessState:

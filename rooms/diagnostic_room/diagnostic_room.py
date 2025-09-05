@@ -3,13 +3,13 @@ Diagnostic Room Implementation
 Main orchestrator that implements the Diagnostic Room Protocol and Contract
 """
 
-from typing import Optional
-from room_types import DiagnosticRoomInput, DiagnosticRoomOutput
-from sensing import capture_tone_and_residue
-from readiness import assess_readiness, readiness_to_action
-from mapping import map_to_protocol
-from capture import capture_diagnostics, format_display_text
-from completion import append_fixed_marker
+from typing import Optional, Union, Dict, Any
+from rooms.diagnostic_room.room_types import DiagnosticRoomInput, DiagnosticRoomOutput
+from rooms.diagnostic_room.sensing import capture_tone_and_residue
+from rooms.diagnostic_room.readiness import assess_readiness, readiness_to_action
+from rooms.diagnostic_room.mapping import map_to_protocol
+from rooms.diagnostic_room.capture import capture_diagnostics, format_display_text
+from rooms.diagnostic_room.completion import append_fixed_marker
 
 
 class DiagnosticRoom:
@@ -64,7 +64,11 @@ class DiagnosticRoom:
             )
 
 
-def run_diagnostic_room(input_data: DiagnosticRoomInput, diagnostics_enabled: bool = True) -> DiagnosticRoomOutput:
+def run_diagnostic_room(input_data: Union[DiagnosticRoomInput, Dict[str, Any]], diagnostics_enabled: bool = True) -> Dict[str, Any]:
     """Standalone function for external use"""
+    from dataclasses import asdict
+    from rooms.diagnostic_room.room_types import DiagnosticRoomInput
+    inp = DiagnosticRoomInput.from_obj(input_data)
     room = DiagnosticRoom(diagnostics_enabled)
-    return room.run_diagnostic_room(input_data)
+    result = room.run_diagnostic_room(inp)
+    return asdict(result)

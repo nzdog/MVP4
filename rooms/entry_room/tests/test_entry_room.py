@@ -6,20 +6,20 @@ Tests all behavioral invariants and edge cases using pytest
 import pytest
 import asyncio
 from typing import List, Dict, Any
-from entry_room.types import (
+from rooms.entry_room.types import (
     EntryRoomInput,
     EntryRoomOutput,
     PaceState,
     GateResult,
     EntryRoomContext
 )
-from entry_room.entry_room import EntryRoom, EntryRoomConfig, run_entry_room
-from entry_room.reflection import VerbatimReflection
-from entry_room.gates import GateChainConfig
-from entry_room.pace import PacePolicy
-from entry_room.consent import ConsentPolicy
-from entry_room.diagnostics import DiagnosticsPolicy
-from entry_room.completion import CompletionPolicy
+from rooms.entry_room.entry_room import EntryRoom, EntryRoomConfig, run_entry_room
+from rooms.entry_room.reflection import VerbatimReflection
+from rooms.entry_room.gates import GateChainConfig
+from rooms.entry_room.pace import PacePolicy
+from rooms.entry_room.consent import ConsentPolicy
+from rooms.entry_room.diagnostics import DiagnosticsPolicy
+from rooms.entry_room.completion import CompletionPolicy
 
 
 # Mock implementations for testing
@@ -520,8 +520,9 @@ class TestRunEntryRoomFunction:
         
         result = await run_entry_room(input_data)
         
-        assert hasattr(result, 'display_text')
-        assert hasattr(result, 'next_action')
+        assert isinstance(result, dict)
+        assert 'display_text' in result
+        assert 'next_action' in result
     
     @pytest.mark.asyncio
     async def test_standalone_function_accepts_config(self):
@@ -548,4 +549,5 @@ class TestRunEntryRoomFunction:
         
         result = await run_entry_room(input_data, config)
         
-        assert '[CUSTOM MARKER]' in result.display_text
+        assert isinstance(result, dict)
+        assert '[CUSTOM MARKER]' in result['display_text']

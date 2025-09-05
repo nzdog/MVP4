@@ -3,15 +3,28 @@ Protocol Room Types
 Implements the Protocol Room Contract I/O specification using Python type hints
 """
 
-from dataclasses import dataclass
-from typing import List, Dict, Any, Optional, Literal
+from dataclasses import dataclass, asdict
+from typing import List, Dict, Any, Optional, Literal, Union
 
 
 @dataclass
 class ProtocolRoomInput:
     """Input contract for Protocol Room"""
     session_state_ref: str
-    payload: Any
+    payload: Optional[Dict[str, Any]] = None
+    options: Optional[Dict[str, Any]] = None
+
+    @classmethod
+    def from_obj(cls, obj: Union["ProtocolRoomInput", Dict[str, Any]]) -> "ProtocolRoomInput":
+        if isinstance(obj, cls):
+            return obj
+        if not isinstance(obj, dict):
+            raise TypeError(f"{cls.__name__}.from_obj expected dict or {cls.__name__}, got {type(obj)}")
+        return cls(
+            session_state_ref=obj.get("session_state_ref", ""),
+            payload=obj.get("payload"),
+            options=obj.get("options"),
+        )
 
 
 @dataclass

@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional, Literal
+from dataclasses import dataclass, field, asdict
+from typing import List, Dict, Any, Optional, Literal, Union
 from enum import Enum
 from datetime import datetime
 
@@ -55,7 +55,20 @@ class GovernanceResult:
 class MemoryRoomInput:
     """Input contract for Memory Room"""
     session_state_ref: str
-    payload: Any
+    payload: Optional[Dict[str, Any]] = None
+    options: Optional[Dict[str, Any]] = None
+
+    @classmethod
+    def from_obj(cls, obj: Union["MemoryRoomInput", Dict[str, Any]]) -> "MemoryRoomInput":
+        if isinstance(obj, cls):
+            return obj
+        if not isinstance(obj, dict):
+            raise TypeError(f"{cls.__name__}.from_obj expected dict or {cls.__name__}, got {type(obj)}")
+        return cls(
+            session_state_ref=obj.get("session_state_ref", ""),
+            payload=obj.get("payload"),
+            options=obj.get("options"),
+        )
 
 
 @dataclass

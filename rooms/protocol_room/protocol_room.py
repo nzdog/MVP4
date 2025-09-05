@@ -3,7 +3,7 @@ Protocol Room Implementation
 Main orchestrator that implements the Protocol Room Protocol and Contract
 """
 
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Union
 from .room_types import ProtocolRoomInput, ProtocolRoomOutput, ProtocolDepth, ProtocolText
 from .canon import fetch_protocol_text, get_protocol_by_depth
 from .depth import select_protocol_depth, format_depth_label, get_depth_description
@@ -144,7 +144,11 @@ class ProtocolRoom:
         )
 
 
-def run_protocol_room(input_data: ProtocolRoomInput) -> ProtocolRoomOutput:
+def run_protocol_room(input_data: Union[ProtocolRoomInput, Dict[str, Any]]) -> Dict[str, Any]:
     """Standalone function for external use"""
+    from rooms.protocol_room.room_types import ProtocolRoomInput
+    from dataclasses import asdict
+    inp = ProtocolRoomInput.from_obj(input_data)
     room = ProtocolRoom()
-    return room.run_protocol_room(input_data)
+    result = room.run_protocol_room(inp)
+    return asdict(result)

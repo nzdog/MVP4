@@ -381,10 +381,11 @@ class TestRunProtocolRoomFunction:
         
         result = run_protocol_room(input_data)
         
-        assert hasattr(result, 'display_text')
-        assert hasattr(result, 'next_action')
-        assert result.next_action == "continue"
-        assert result.display_text.endswith(" [[COMPLETE]]")
+        assert isinstance(result, dict)
+        assert 'display_text' in result
+        assert 'next_action' in result
+        assert result['next_action'] == "continue"
+        assert result['display_text'].endswith(" [[COMPLETE]]")
 
 
 class TestNoTypeScriptArtifacts:

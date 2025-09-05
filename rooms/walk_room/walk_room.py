@@ -3,7 +3,7 @@ Walk Room Module
 Main orchestrator for protocol walk execution with sequence enforcement, pacing, and diagnostics
 """
 
-from typing import Optional, Dict, Any, List, Tuple
+from typing import Optional, Dict, Any, List, Tuple, Union
 from .contract_types import (
     WalkRoomInput, WalkRoomOutput, WalkStep, WalkState, 
     PaceState, StepDiagnostics, ProtocolStructure, WalkSession
@@ -351,7 +351,11 @@ class WalkRoom:
         )
 
 
-def run_walk_room(input_data: WalkRoomInput) -> WalkRoomOutput:
+def run_walk_room(input_data: Union[WalkRoomInput, Dict[str, Any]]) -> Dict[str, Any]:
     """Standalone function to run Walk Room"""
+    from rooms.walk_room.contract_types import WalkRoomInput
+    from dataclasses import asdict
+    inp = WalkRoomInput.from_obj(input_data)
     room = WalkRoom()
-    return room.run_walk_room(input_data)
+    result = room.run_walk_room(inp)
+    return asdict(result)

@@ -656,8 +656,9 @@ class TestExitRoomIntegration:
         
         result = run_exit_room(input_data)
         
-        assert result.next_action == "continue"
-        assert "Session Successfully Terminated" in result.display_text
+        assert isinstance(result, dict)
+        assert result['next_action'] == "continue"
+        assert "Session Successfully Terminated" in result['display_text']
 
 
 class TestExitRoomEdgeCases:

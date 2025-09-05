@@ -4,7 +4,7 @@ Implements Tone and Residue Sensing theme from Diagnostic Room Protocol
 """
 
 from typing import Any
-from room_types import DiagnosticSignals, ReadinessState
+from rooms.diagnostic_room.room_types import DiagnosticSignals, ReadinessState
 
 
 def capture_tone_and_residue(payload: Any) -> DiagnosticSignals:

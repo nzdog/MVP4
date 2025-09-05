@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Union
 from datetime import datetime
 from .contract_types import (
     ExitRoomInput, ExitRoomOutput, ExitRoomState, SessionState,
@@ -308,7 +308,11 @@ class ExitRoom:
         }
 
 
-def run_exit_room(input_data: ExitRoomInput) -> ExitRoomOutput:
+def run_exit_room(input_data: Union[ExitRoomInput, Dict[str, Any]]) -> Dict[str, Any]:
     """Convenience function to run the Exit Room"""
+    from rooms.exit_room.contract_types import ExitRoomInput
+    from dataclasses import asdict
+    inp = ExitRoomInput.from_obj(input_data)
     room = ExitRoom()
-    return room.process_exit(input_data)
+    result = room.process_exit(inp)
+    return asdict(result)

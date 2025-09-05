@@ -4,7 +4,7 @@ Implements Silent Capture theme from Diagnostic Room Protocol
 """
 
 from typing import Dict, Any, Optional
-from room_types import DiagnosticSignals, ProtocolMapping
+from rooms.diagnostic_room.room_types import DiagnosticSignals, ProtocolMapping
 
 
 def capture_diagnostics(

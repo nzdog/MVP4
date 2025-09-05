@@ -34,7 +34,15 @@ class TestHallwayHappyPath:
         # Run full sequence
         result = await orchestrator.run(
             session_state_ref="test-session-123",
-            options={"stop_on_decline": True}
+            options={"stop_on_decline": True},
+            payloads={
+                "entry_room": {"consent": "YES"},
+                "protocol_room": {"protocol_id": "clearing_entry", "depth": "full"},
+                "exit_room": {
+                    "completion_confirmed": True,
+                    "session_goals_met": True
+                }
+            }
         )
         
         # Validate against schema
@@ -76,7 +84,14 @@ class TestHallwayHappyPath:
         # Run mini-walk
         result = await orchestrator.run(
             session_state_ref="test-session-456",
-            options={"mini_walk": True}
+            options={"mini_walk": True},
+            payloads={
+                "entry_room": {"consent": "YES"},
+                "exit_room": {
+                    "completion_confirmed": True,
+                    "session_goals_met": True
+                }
+            }
         )
         
         # Validate against schema
@@ -105,7 +120,15 @@ class TestHallwayHappyPath:
         custom_rooms = ["entry_room", "protocol_room", "exit_room"]
         result = await orchestrator.run(
             session_state_ref="test-session-789",
-            options={"rooms_subset": custom_rooms}
+            options={"rooms_subset": custom_rooms},
+            payloads={
+                "entry_room": {"consent": "YES"},
+                "protocol_room": {"protocol_id": "clearing_entry", "depth": "full"},
+                "exit_room": {
+                    "completion_confirmed": True,
+                    "session_goals_met": True
+                }
+            }
         )
         
         # Validate against schema

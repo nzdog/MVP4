@@ -577,6 +577,6 @@ class TestRunWalkRoomFunction:
         
         result = run_walk_room(input_data)
         
-        assert isinstance(result, WalkRoomOutput)
-        assert 'Step 1' in result.display_text
-        assert result.next_action == "continue"
+        assert isinstance(result, dict)
+        assert 'Step 1' in result['display_text']
+        assert result['next_action'] == "continue"

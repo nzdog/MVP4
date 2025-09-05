@@ -1,29 +1,42 @@
 """
 Diagnostic Room Types
-Implements the Diagnostic Room Contract I/O specification using Python type hints
+Canonical type definitions for Diagnostic Room Protocol and Contract
 """
 
-from dataclasses import dataclass
-from typing import List, Dict, Any, Optional, Literal
+from dataclasses import dataclass, asdict
+from typing import List, Dict, Any, Optional, Literal, Union
 
 
 @dataclass
 class DiagnosticRoomInput:
-    """Input contract for Diagnostic Room"""
+    """Input structure for Diagnostic Room"""
     session_state_ref: str
-    payload: Any
+    payload: Optional[Dict[str, Any]] = None
+    options: Optional[Dict[str, Any]] = None
+
+    @classmethod
+    def from_obj(cls, obj: Union["DiagnosticRoomInput", Dict[str, Any]]) -> "DiagnosticRoomInput":
+        if isinstance(obj, cls):
+            return obj
+        if not isinstance(obj, dict):
+            raise TypeError(f"{cls.__name__}.from_obj expected dict or {cls.__name__}, got {type(obj)}")
+        return cls(
+            session_state_ref=obj.get("session_state_ref", ""),
+            payload=obj.get("payload"),
+            options=obj.get("options"),
+        )
 
 
 @dataclass
 class DiagnosticRoomOutput:
-    """Output contract for Diagnostic Room - must match exactly"""
+    """Output structure for Diagnostic Room"""
     display_text: str
     next_action: Literal["continue"]
 
 
 @dataclass
 class DiagnosticSignals:
-    """Diagnostic signals captured from input"""
+    """Captured diagnostic signals"""
     tone_label: str
     residue_label: str
     readiness_state: 'ReadinessState'
@@ -31,18 +44,17 @@ class DiagnosticSignals:
 
 @dataclass
 class ProtocolMapping:
-    """Protocol mapping result with rationale"""
+    """Protocol mapping result"""
     suggested_protocol_id: str
     rationale: str
 
 
-# Type aliases
+# Readiness states
 ReadinessState = Literal["NOW", "HOLD", "LATER", "SOFT_HOLD"]
 
 
-# Protocol registry constants
 class Protocols:
-    """Static protocol registry for deterministic mapping"""
+    """Protocol constants"""
     RESOURCING_MINI_WALK = "resourcing_mini_walk"
     CLEARING_ENTRY = "clearing_entry"
     PACING_ADJUSTMENT = "pacing_adjustment"

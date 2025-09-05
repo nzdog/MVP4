@@ -666,9 +666,10 @@ class TestRunIntegrationCommitRoomFunction:
         
         result = run_integration_commit_room(input_data)
         
-        assert "Integration Captured Successfully" in result.display_text
-        assert result.display_text.endswith(" [[COMPLETE]]")
-        assert result.next_action == "continue"
+        assert isinstance(result, dict)
+        assert "Integration Captured Successfully" in result['display_text']
+        assert result['display_text'].endswith(" [[COMPLETE]]")
+        assert result['next_action'] == "continue"
 
 
 class TestNoTypeScriptArtifacts:
