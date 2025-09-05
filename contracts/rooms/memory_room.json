@@ -20,7 +20,7 @@
     "overrides": {}
   },
   "inputs": {
-    "session_state_ref": "session_abc123_def456",
+    "session_state_ref": "session-example-abc123",
     "payload": {}
   },
   "outputs": {

@@ -6,7 +6,7 @@
   "stone_alignment": [
     "Clarity Over Cleverness",
     "Integrity Is the Growth Strategy",
-    "Built for Wholeness"
+    "The System Walks With Us"
   ],
   "inputs": {
     "brief": {
@@ -19,7 +19,7 @@
       "required": false,
       "description": "Optional contextual signals (diagnostics snapshot, memory pointers, caller metadata)."
     },
-    "session_state_ref": "session_abc123_def456",
+    "session_state_ref": "session-example-abc123",
     "payload": {}
   },
   "outputs": {

@@ -16,9 +16,9 @@
     "toggle_supported": true
   },
   "inputs": {
-    "session_state_ref": "string (uuid)",
-    "room_id": "string",
-    "raw_text": "string (optional)",
+    "session_state_ref": "session-example-diag456",
+    "room_id": "entry_room",
+    "raw_text": "Hello, I'd like to start a session",
     "metadata": {}
   },
   "outputs": {

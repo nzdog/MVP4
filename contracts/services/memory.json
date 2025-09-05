@@ -37,7 +37,7 @@
     ]
   },
   "inputs": {
-    "session_state_ref": "string (uuid)",
+    "session_state_ref": "session-example-mem789",
     "payload": {}
   },
   "outputs": {
