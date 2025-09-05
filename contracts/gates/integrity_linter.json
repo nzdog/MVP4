@@ -16,7 +16,7 @@
     ]
   },
   "inputs": {
-    "raw_text": "string"
+    "raw_text": "This is a sample text to be linted for integrity violations."
   },
   "outputs": {
     "lint_pass": true,

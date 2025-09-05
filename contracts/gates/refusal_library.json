@@ -9,10 +9,10 @@
     "not_us": "That’s not something this system can walk with."
   },
   "inputs": {
-    "failure_reason": "string"
+    "failure_reason": "Output failed integrity check due to manipulation attempt"
   },
   "outputs": {
-    "refusal_text": "string",
+    "refusal_text": "I can't offer that right now, but we can continue elsewhere.",
     "refusal_mode": "not_now"
   },
   "notes": "Always maintain rhythm, integrity, and respect. Refusals are part of coherence, not rejection."

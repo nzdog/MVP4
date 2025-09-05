@@ -3,7 +3,7 @@
   "$id": "rooms.schema.json",
   "title": "PRA Room Contract",
   "type": "object",
-  "required": ["room_id", "title", "version", "purpose", "mini_walk_supported", "completion_prompt_required", "diagnostics_default", "gate_profile", "inputs", "outputs"],
+  "required": ["room_id", "title", "version", "purpose", "stone_alignment", "mini_walk_supported", "completion_prompt_required", "diagnostics_default", "gate_profile", "inputs", "outputs"],
   "properties": {
     "room_id": { "type": "string" },
     "title": { "type": "string" },
@@ -11,10 +11,9 @@
     "purpose": { "type": "string" },
   "stone_alignment": {
     "description": "Declares which Foundation Stones this room explicitly aligns to.",
-    "oneOf": [
-      { "type": "array", "items": { "type": "string" } },
-      { "type": "string" }
-    ]
+    "type": "array",
+    "items": { "type": "string" },
+    "minItems": 1
   },
 
     "mini_walk_supported": { "type": "boolean" },
@@ -29,7 +28,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["integrity_linter", "plain_language_rewriter", "stones_alignment_filter", "coherence_gate"]
+            "enum": ["integrity_linter", "plain_language_rewriter", "stones_alignment_filter", "coherence_gate", "refusal_library"]
           }
         },
         "overrides": { "type": "object", "additionalProperties": true }

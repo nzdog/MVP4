@@ -16,7 +16,7 @@
     "Does the system walk with us?"
   ],
   "inputs": {
-    "candidate_text": "string"
+    "candidate_text": "This is a candidate text to be checked against Foundation Stones alignment."
   },
   "outputs": {
     "stones_pass": true,

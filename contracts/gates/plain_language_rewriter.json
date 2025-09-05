@@ -16,10 +16,10 @@
     ]
   },
   "inputs": {
-    "candidate_text": "string"
+    "candidate_text": "This is a sample text that may need plain language rewriting."
   },
   "outputs": {
-    "rewritten_text": "string",
+    "rewritten_text": "This is a sample text that may need plain language rewriting.",
     "changes_made": []
   },
   "on_failure": {

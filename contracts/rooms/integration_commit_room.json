@@ -18,8 +18,8 @@
     "overrides": {}
   },
   "inputs": {
-    "session_state_ref": "SESSION_PLACEHOLDER",
-    "payload": null
+    "session_state_ref": "session_abc123_def456",
+    "payload": {}
   },
   "outputs": {
     "display_text": "",

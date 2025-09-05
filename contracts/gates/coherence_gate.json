@@ -8,8 +8,8 @@
     "drift_detection_enabled": true
   },
   "inputs": {
-    "candidate_text": "string",
-    "session_state_ref": "string"
+    "candidate_text": "This is a candidate text for coherence checking.",
+    "session_state_ref": "session_abc123_def456"
   },
   "outputs": {
     "coherence_pass": true,
